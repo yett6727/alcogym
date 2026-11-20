@@ -32,11 +32,12 @@ A prebuilt `alcogym.xpi` is included in this folder. To rebuild it after changes
 zip -r -FS alcogym.xpi manifest.json content.js popup.html popup.css popup.js icons
 ```
 
+The extensions is unsigned, so to install use Firefox Developer Edition/Nightly or ESR.
+
+For firefox ESR go to `about:config` and change `xpinsstall.signatures.required` to `false`.
+
 Then open `about:addons` → gear menu → **Install Add-on From File…** and choose
-`alcogym.xpi`. Regular Firefox requires extensions to be signed; use the
-Developer Edition/Nightly, or ESR with `xpinstall.signatures.required` set to
-`false`, or submit the XPI to [addons.mozilla.org](https://addons.mozilla.org)
-for signing.
+`alcogym.xpi`.
 
 ## Toggle
 
