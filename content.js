@@ -207,6 +207,26 @@
       .brand-mark[data-alcogym-mark="1"] svg {
         display: none;
       }
+
+      /* Double the code editor height. The site uses
+         max(480px, 60vh) / max(960px, 90vh) on desktop and
+         max(380px, 45vh) / max(750px, 80vh) on narrow screens. */
+      .editor-body,
+      .code-input {
+        min-height: max(960px, 120vh) !important;
+      }
+      .code-input {
+        max-height: max(1920px, 180vh) !important;
+      }
+      @media (max-width: 760px) {
+        .editor-body,
+        .code-input {
+          min-height: max(760px, 90vh) !important;
+        }
+        .code-input {
+          max-height: max(1500px, 160vh) !important;
+        }
+      }
     `;
     (document.head || document.documentElement).append(style);
   }
