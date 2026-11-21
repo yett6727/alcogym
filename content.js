@@ -104,17 +104,31 @@
     const intro = document.querySelector(".auth-intro");
     if (!intro) return;
 
-    const eyebrow = intro.querySelector(".eyebrow");
-    if (eyebrow && /написать/i.test(eyebrow.textContent || "")) {
+    // The current login screen dropped the original eyebrow, so put it back
+    // above the heading. Wait for the heading if the intro is still empty.
+    let eyebrow = intro.querySelector(".eyebrow");
+    if (!eyebrow) {
+      const heading = intro.querySelector("h1");
+      if (heading) {
+        eyebrow = document.createElement("div");
+        eyebrow.className = "eyebrow";
+        intro.insertBefore(eyebrow, heading);
+      }
+    }
+    if (eyebrow && eyebrow.textContent !== AUTH_EYEBROW) {
       eyebrow.textContent = AUTH_EYEBROW;
     }
 
+    // The heading used to be "Алгоритмы, которые остаются в памяти."; it is
+    // now "Тренажёр алгоритмов". Match either form (and any future wording
+    // that still mentions algorithms) without depending on the exact phrase.
     const heading = intro.querySelector("h1");
-    if (heading && /алгоритмы/i.test(heading.textContent || "")) {
+    if (heading && /алгоритм/i.test(heading.textContent || "")) {
+      // Keep spaces around the <br>s: the site hides them on narrow screens.
       heading.replaceChildren(
-        "Алкоголь,",
+        "Алкоголь, ",
         document.createElement("br"),
-        "который остаётся",
+        "который остаётся ",
         document.createElement("br"),
         "в почках."
       );
