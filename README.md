@@ -1,6 +1,10 @@
 # AlcoGym
 
 A tiny Firefox extension that rebrands [algogym.ru](https://algogym.ru):
+1. New jokes for the login page
+2. New icons and title
+3. Editor in training is 2x times bigger
+4. The top bar in training always follows the screen
 
 ## Load it
 
