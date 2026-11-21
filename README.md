@@ -2,16 +2,6 @@
 
 A tiny Firefox extension that rebrands [algogym.ru](https://algogym.ru):
 
-- the sidebar/auth logo (purple tile with code brackets) becomes a beer `🍺`
-- the wordmark `AlgoGym` becomes `AlcoGym`
-- every `algogym` in page text becomes `alcogym` (`algogym.ru` → `alcogym.ru`)
-- the browser tab title, meta description and the favicon are replaced too
-- the login screen is rewritten: `ПОНЯТЬ. ПРОПИТЬ. ЗАБЫТЬ.`,
-  «Алкоголь, который остаётся с вами.» and a fourth feature, «Жёсткий отходняк»
-
-It works with the site's SPA router: new screens and re-renders are rebranded as
-they appear, and code editor / textarea content is never touched.
-
 ## Load it
 
 ### Temporary (for local use)
