@@ -207,6 +207,68 @@
       .brand-mark[data-alcogym-mark="1"] svg {
         display: none;
       }
+
+      /* Double the code editor height. The site uses
+         max(480px, 60vh) / max(960px, 90vh) on desktop and
+         max(380px, 45vh) / max(750px, 80vh) on narrow screens. */
+      .editor-body,
+      .code-input {
+        min-height: max(960px, 120vh) !important;
+      }
+      .code-input {
+        max-height: max(1920px, 180vh) !important;
+      }
+      @media (max-width: 760px) {
+        .editor-body,
+        .code-input {
+          min-height: max(760px, 90vh) !important;
+        }
+        .code-input {
+          max-height: max(1500px, 160vh) !important;
+        }
+      }
+
+      /* Pin the training timer to the top of the screen. The vertical
+         padding is removed and the timer label/value share a row, which
+         halves the card height while fonts and buttons keep their size. */
+      .card.timer-bar {
+        position: fixed !important;
+        top: 0;
+        right: 0;
+        /* Start after the fixed sidebar so the two never overlap. */
+        left: 224px;
+        z-index: 70;
+        margin: 0 !important;
+        padding: 0 20px !important;
+        border-radius: 0;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        box-shadow: 0 6px 18px #22243a1f;
+        height: 45px !important;
+      }
+      .card.timer-bar > div:first-child {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+      .card.timer-bar .timer-value {
+        margin-top: 0;
+      }
+      @media (max-width: 1250px) {
+        .card.timer-bar {
+          left: 210px;
+        }
+      }
+      @media (max-width: 760px) {
+        .card.timer-bar {
+          left: 0;
+          padding: 0 14px !important;
+        }
+        .card.timer-bar > div:first-child {
+          gap: 7px;
+        }
+      }
     `;
     (document.head || document.documentElement).append(style);
   }
