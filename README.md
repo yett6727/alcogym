@@ -9,6 +9,7 @@ A tiny Firefox extension that rebrands [algogym.ru](https://algogym.ru):
 - the login screen is rewritten: `ПОНЯТЬ. ПРОПИТЬ. ЗАБЫТЬ.`,
   «Алкоголь, который остаётся с вами.» and a fourth feature, «Жёсткий отходняк»
 - the code editor is twice as tall as the site's default
+- the training timer is pinned to the top of the screen and made half as tall
 
 It works with the site's SPA router: new screens and re-renders are rebranded as
 they appear, and code editor / textarea content is never touched.
