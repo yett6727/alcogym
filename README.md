@@ -17,11 +17,14 @@ Go to `chrome://extensions` and click 'Developer mode' in top-right corner. Then
 
 ### Firefox
 
-#### Temporary (for local use)
+Regular Firefox cannot install an unsigned `.xpi` at all — that preference is
+locked to `true` there. Use one of the two options below.
+
+#### Temporary (any Firefox, no signature needed)
 
 1. Open `about:debugging#/runtime/this-firefox`.
 2. Click **Load Temporary Add-on…**.
-3. Pick `manifest.json` in this folder.
+3. Pick `manifest.json` in this folder (not the `.xpi`).
 4. Reload any open algogym.ru tab.
 
 The extension is removed when Firefox closes. Load it again the same way after a
@@ -29,10 +32,19 @@ restart.
 
 #### Permanent (unsigned, Firefox Developer Edition / Nightly / ESR)
 
-For firefox ESR go to `about:config` and change `xpinsstall.signatures.required` to `false`.
+1. Go to `about:config` and set **`xpinstall.signatures.required`** to `false`.
+   (The correct spelling matters: `xpinstall`, not `xpinsstall`.)
+2. Open `about:addons` → gear menu → **Install Add-on From File…** and choose
+   `alcogym.xpi` from this folder.
 
-Then open `about:addons` → gear menu → **Install Add-on From File…** and choose
-`alcogym.xpi`.
+Do **not** install by clicking the release-asset download link: link installs
+land in a disabled state. If you already did that, restart Firefox (or enable
+AlcoGym in `about:addons`), then reload the algogym.ru tab.
+
+If it still does nothing:
+- make sure AlcoGym is enabled in `about:addons`, and the 🍺 popup toggle is **On**;
+- remove any older AlcoGym build with a different ID before reinstalling;
+- check the Browser Console (`Ctrl+Shift+J`) for content-script errors.
 
 ## Toggle
 
