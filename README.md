@@ -7,6 +7,10 @@ A tiny Firefox extension that rebrands [algogym.ru](https://algogym.ru):
 4. The top bar in training always follows the screen
 5. 2% chance to load site with 'Pacifico' font
 
+## Install it
+
+You can install signed version from addons.mozilla.org or you can download unsigned version here.
+
 ## Load it
 
 The extension is unsigned yet, but you can load it for debugging use. It may require re-adding extension on restart.
