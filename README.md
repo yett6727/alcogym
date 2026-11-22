@@ -5,45 +5,18 @@ A tiny Firefox extension that rebrands [algogym.ru](https://algogym.ru):
 2. New icons and title
 3. Editor in training is 2x times bigger
 4. The top bar in training always follows the screen
-5. 2% chance to load site with 'Pacifico' font
-
-## Install it
-
-You can install signed version from addons.mozilla.org or you can download unsigned version here.
 
 ## Load it
 
-The extension is unsigned yet, but you can load it for debugging use. It may require re-adding extension on restart.
-
-### Chromium
+### Chrome
 
 Go to `chrome://extensions` and click 'Developer mode' in top-right corner. Then choose 'Load from file' and choose project directory.
 
 ### Firefox
 
-Regular Firefox cannot install an unsigned `.xpi` at all — that preference is
-locked to `true` there. Use one of the two options below.
+Open `about:addons` → gear menu → **Install Add-on From File…** and choose`alcogym@yett6727.github.com.xpi` from this folder.
 
-#### Temporary (any Firefox, no signature needed)
-
-1. Open `about:debugging#/runtime/this-firefox`.
-2. Click **Load Temporary Add-on…**.
-3. Pick `manifest.json` in this folder (not the `.xpi`).
-4. Reload any open algogym.ru tab.
-
-The extension is removed when Firefox closes. Load it again the same way after a
-restart.
-
-#### Permanent (unsigned, Firefox Developer Edition / Nightly / ESR)
-
-1. Go to `about:config` and set **`xpinstall.signatures.required`** to `false`.
-   (The correct spelling matters: `xpinstall`, not `xpinsstall`.)
-2. Open `about:addons` → gear menu → **Install Add-on From File…** and choose
-   `alcogym.xpi` from this folder.
-
-Do **not** install by clicking the release-asset download link: link installs
-land in a disabled state. If you already did that, restart Firefox (or enable
-AlcoGym in `about:addons`), then reload the algogym.ru tab.
+Do **not** install by clicking the release-asset download link: link installs land in a disabled state. If you already did that, restart Firefox (or enable AlcoGym in `about:addons`), then reload the algogym.ru tab.
 
 If it still does nothing:
 - make sure AlcoGym is enabled in `about:addons`, and the 🍺 popup toggle is **On**;
