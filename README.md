@@ -61,7 +61,7 @@ the original branding.
 A prebuilt `alcogym.xpi` is included in this folder or in releases tab. To rebuild it after changes:
 
 ```sh
-zip -r -FS alcogym.xpi manifest.json content.js popup.html popup.css popup.js icons
+zip -r -FS alcogym.xpi manifest.json content.js popup.html popup.css popup.js icons entrance_files entrance.html
 ```
 
 ## Permissions
