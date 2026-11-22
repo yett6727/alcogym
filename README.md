@@ -35,6 +35,19 @@ Click the 🍺 toolbar button to turn the rebranding on or off. The setting is
 stored with `browser.storage.local`; disabling it reloads the page to restore
 the original branding.
 
+## Catalog stats
+
+On the catalog page (`https://algogym.ru/#/catalog`), the extension adds to
+each topic card:
+
+- **Рекорд** — your personal record: the best time you solved the theme.
+- **Место** — your place in the theme's leaderboard (when you have a current
+  result for the theme).
+- **Решили** — the number of people who have solved the theme.
+
+The numbers come from your account (`/api/users/<id>`), so they appear only
+when you are logged in; logged-out visitors see the cards unchanged.
+
 ## Permissions
 
 - `storage` — remembers the on/off switch.

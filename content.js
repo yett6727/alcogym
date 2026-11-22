@@ -221,8 +221,144 @@
       .brand-mark[data-alcogym-mark="1"] svg {
         display: none;
       }
+      .catalog-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 9px 0 0;
+        font-size: 9px;
+        color: var(--ink, #2a2f45);
+      }
+      .catalog-stats span {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 5px;
+      }
+      .catalog-stats b {
+        font-weight: 600;
+        color: var(--ink, #2a2f45);
+      }
     `;
     (document.head || document.documentElement).append(style);
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Catalog: personal record, place, and people solved per theme      */
+  /* ---------------------------------------------------------------- */
+
+  function fetchJson(path) {
+    return fetch(path, { credentials: "same-origin", cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .catch(() => null);
+  }
+
+  let catalogStatsPromise = null;
+  let catalogStatsMap = null;
+  let catalogStatsCheckedAt = 0;
+
+  // One lazy fetch: the account, then the user's public profile records —
+  // {topicId: record} with bestMs, rank and totalEntries per theme.
+  // While logged out, retry at most every few seconds (late logins).
+  function fetchCatalogStats() {
+    if (catalogStatsMap && catalogStatsPromise) return catalogStatsPromise;
+    const now = Date.now();
+    if (catalogStatsPromise && now - catalogStatsCheckedAt < 5000) return catalogStatsPromise;
+    catalogStatsCheckedAt = now;
+    catalogStatsPromise = (async () => {
+      const me = await fetchJson("/api/auth/me");
+      const id = me?.user?.id;
+      if (!id) return null;
+      const profile = await fetchJson("/api/users/" + encodeURIComponent(id));
+      const map = new Map();
+      for (const record of profile?.topics || []) {
+        if (typeof record?.topic === "string") map.set(record.topic, record);
+      }
+      return map;
+    })();
+    return catalogStatsPromise;
+  }
+
+  // Same time text the site shows for topic leaderboards.
+  function formatRankTime(ms) {
+    const total = Math.max(0, Math.floor(ms / 1000));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor(total / 60) % 60;
+    const s = total % 60;
+    const msPart = String(Math.floor(ms % 1000)).padStart(3, "0");
+    return `${h ? `${String(h).padStart(2, "0")}:` : ""}${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}.${msPart}`;
+  }
+
+  // Same place text the site's profile uses ("12", "12–15").
+  function displayRank(record) {
+    if (typeof record.rankLabel === "string" && record.rankLabel) return record.rankLabel;
+    if (Number.isSafeInteger(record.rankEnd) && record.rankEnd > record.rank) {
+      return `${record.rank}–${record.rankEnd}`;
+    }
+    if (Number.isSafeInteger(record.rank)) return String(record.rank);
+    return null;
+  }
+
+  function catalogStat(label, value) {
+    const stat = document.createElement("span");
+    const labelEl = document.createElement("span");
+    labelEl.className = "catalog-stat-label";
+    labelEl.textContent = label;
+    const valueEl = document.createElement("b");
+    valueEl.textContent = value;
+    stat.append(labelEl, valueEl);
+    return stat;
+  }
+
+  function applyCatalogStats(card) {
+    if (card.dataset.alcogymStats === "1") return;
+    const id = card.querySelector("[data-id]")?.dataset?.id;
+    if (!id) {
+      card.dataset.alcogymStats = "1";
+      return;
+    }
+    if (catalogStatsMap === null) return; // still loading (or logged out)
+
+    const record = catalogStatsMap.get(id);
+    if (!record) {
+      card.dataset.alcogymStats = "1";
+      return;
+    }
+
+    const stats = [];
+    if (Number.isSafeInteger(record.bestMs) && record.bestMs >= 0) {
+      stats.push(catalogStat("Ваш рекорд", formatRankTime(record.bestMs)));
+    }
+    if (record.isCurrent !== false) {
+      const place = displayRank(record);
+      if (place) stats.push(catalogStat("Место", place));
+    }
+    if (Number.isSafeInteger(record.totalEntries) && record.totalEntries > 0) {
+      stats.push(catalogStat("Решили", String(record.totalEntries)));
+    }
+    if (!stats.length) {
+      card.dataset.alcogymStats = "1";
+      return;
+    }
+
+    card.dataset.alcogymStats = "1";
+    const row = document.createElement("div");
+    row.className = "catalog-stats";
+    row.append(...stats);
+    const meta = card.querySelector(".topic-meta");
+    if (meta) meta.after(row);
+    else card.append(row);
+  }
+
+  function enrichCatalog(root) {
+    if (!enabled || !document.querySelector(".catalog")) return;
+    const cards = root && root.querySelectorAll ? Array.from(root.querySelectorAll(".topic-card")) : [];
+    if (root && root.nodeType === Node.ELEMENT_NODE && root.classList.contains("topic-card")) cards.push(root);
+    fetchCatalogStats().then((map) => {
+      catalogStatsMap = map;
+      for (const card of cards) applyCatalogStats(card);
+      // Cards can re-render while the profile was loading.
+      for (const card of document.querySelectorAll(".topic-card")) applyCatalogStats(card);
+    });
   }
 
   /* ---------------------------------------------------------------- */
@@ -239,7 +375,10 @@
         fixTextNode(mutation.target);
       } else if (mutation.type === "childList") {
         structural = true;
-        for (const node of mutation.addedNodes) walk(node);
+        for (const node of mutation.addedNodes) {
+          walk(node);
+          enrichCatalog(node);
+        }
       } else if (mutation.type === "attributes") {
         structural = true;
         processNode(mutation.target);
@@ -264,6 +403,7 @@
     fixIcons();
     walk(document);
     fixAuthIntro();
+    enrichCatalog(document);
 
     observer.observe(document.documentElement, {
       childList: true,
@@ -271,6 +411,13 @@
       characterData: true,
       attributes: true,
       attributeFilter: ATTRS.concat("content"),
+    });
+
+    // Late logins / re-entries: re-check the profile when the route changes.
+    window.addEventListener("hashchange", () => {
+      catalogStatsPromise = null;
+      catalogStatsCheckedAt = 0;
+      enrichCatalog(document);
     });
   }
 
