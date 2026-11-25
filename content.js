@@ -237,6 +237,7 @@
       .catalog-stats b {
         font-weight: 600;
         color: var(--ink, #2a2f45);
+      }
 
       /* Double the code editor height. The site uses
          max(480px, 60vh) / max(960px, 90vh) on desktop and
